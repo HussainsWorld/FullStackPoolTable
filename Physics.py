@@ -20,7 +20,7 @@ FRAME_RATE = 0.01
 HEADER = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
                         "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="700" height="1375" viewBox="-25 -25 1400 2750"
+<svg width="350" height="687.5" viewBox="-25 -25 1400 2750"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink">
     <rect width="1350" height="2700" x="0" y="0" fill="#C0D0C0" />""";
@@ -608,6 +608,7 @@ class Database():
 class Game():
     def __init__(self, gameID=None, gameName=None, player1Name=None, player2Name=None):
         self.db = Database()
+        self.db.createDB()
         # valid constructor usage
         if gameID is not None and (gameName is not None or player1Name is not None or player2Name is not None):
             raise TypeError("Invalid")
@@ -664,6 +665,7 @@ class Game():
             cue_Ball.obj.rolling_ball.acc.x = -xvel / speed * DRAG
             cue_Ball.obj.rolling_ball.acc.y = -yvel / speed * DRAG
         initialTime = 0.0
+        maxFrames = 500
         while table:
             initialTime = table.time
             table = table.segment()
@@ -676,8 +678,10 @@ class Game():
                 frameTime = i * FRAME_RATE
                 newT = table.roll(frameTime)
                 newT.time = initialTime + frameTime
-
+                maxFrames -= 1
                 tableID = self.db.writeTable(newT)
                 self.db.setTableShot(tableID, shotID)
-        
+                if (maxFrames == 0):
+                    return tableID
+        # self.conn.commit()
         return tableID

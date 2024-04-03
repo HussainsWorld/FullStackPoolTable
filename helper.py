@@ -1,6 +1,8 @@
 import math
 import Physics
 import random
+import os;
+import sqlite3;
 
 def init_table():
     db = Physics.Database(reset=True)

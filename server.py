@@ -109,7 +109,7 @@ class MyHandler(BaseHTTPRequestHandler):
             playerName1 = self.player_names.get('playerName1', None)
             playerName2 = self.player_names.get('playerName2', None)
             
-            db = Physics.Database()
+            # db = Physics.Database()
             print(playerName1)
             print(playerName2)
             # game = Physics.Database.setGame(gameName="Game01", playerName1=playerName1, playerName2=playerName2)
@@ -179,72 +179,6 @@ class MyHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Length', str(len(jsonResponse)))
             self.end_headers()
             self.wfile.write(jsonResponse.encode('utf-8'))
-
-    def initializeTable(self, form, acceleration):
-
-        table = Physics.Table()
-        sb_number = int(form.getvalue('sb_number'))
-        sb_pos = Physics.Coordinate(float(form.getvalue('sb_x')), float(form.getvalue('sb_y')))
-
-        rb_pos = Physics.Coordinate(float(form.getvalue('rb_x')), float(form.getvalue('rb_y')))
-        rb_vel = Physics.Coordinate(float(form.getvalue('rb_dx')), float(form.getvalue('rb_dy')))
-
-        #place values into the table
-
-        table += Physics.StillBall(sb_number, sb_pos)
-        table += Physics.RollingBall(0, rb_pos, rb_vel, acceleration)
-
-        counter = 0
-        while table:
-            filename = "table-%d.svg" % counter
-            with open(filename,"w") as file:
-                svg_string = table.svg()
-                table = table.segment()
-                file.write(svg_string)
-
-            counter += 1
-
-
-    def generateHtml(self, form):
-        htmlInfo = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Results</title>
-        </head>
-        <body>
-            <h1>Originating Ball Positions and Velocities</h1>
-        """
-
-        # Retrieve values from the form
-        sb_number = int(form.getvalue('sb_number'))
-        sb_x = float(form.getvalue('sb_x'))
-        sb_y = float(form.getvalue('sb_y'))
-        rb_x = float(form.getvalue('rb_x'))
-        rb_y = float(form.getvalue('rb_y'))
-        rb_dx = float(form.getvalue('rb_dx'))
-        rb_dy = float(form.getvalue('rb_dy'))
-
-        # Include values in the HTML content
-        htmlInfo += f"<p>Still Ball Number: {sb_number}</p>"
-        htmlInfo += f"<p>Still Ball Position (x, y): ({sb_x}, {sb_y})</p>"
-        htmlInfo += f"<p>Rolling Ball Position (x, y): ({rb_x}, {rb_y})</p>"
-        htmlInfo += f"<p>Rolling Ball Velocity (dx, dy): ({rb_dx}, {rb_dy})</p>"
-
-        # Print each svg
-        counter = 0
-        while os.path.exists(f'table-{counter}.svg'):
-            htmlInfo += f"<img src='table-{counter}.svg' alt='Table {counter}'><br/>"
-            counter += 1
-
-        htmlInfo += """
-        <br/>
-            <a href="shoot.html">Back</a>
-        </body>
-        </html>
-        """
-
-        return htmlInfo
 
 
 

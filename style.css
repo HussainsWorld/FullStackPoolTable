@@ -15,13 +15,21 @@
 }
 
 
-#svg-container {
+/* #svg-container {
     width: 50%;
     margin: auto; 
     margin-top: 0; 
     position: relative; 
     top: 10px; 
-}
+} */
+/* #svg-container {
+    height: auto;
+    margin: auto; 
+    margin-top: 0; 
+    position: relative; 
+    top: 10px; 
+} */
+
 
 #x, #y {
     margin-top: 10px;

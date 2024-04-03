@@ -29,7 +29,6 @@ $(document).ready(function() {
             console.error('Error occurred:', error); // Log the error message
         }
     });
-    // }
 });
 
 function attachEventHandlers() {
@@ -76,9 +75,9 @@ function attachEventHandlers() {
             isDragging = false;
             const svgElement = $('#svg-container svg')[0];
             const release = screenToSVG(evt.clientX, evt.clientY, svgElement);
-            let xV = release.x - startPoint.x;
-            let yV = release.y - startPoint.y;
-
+            let xV = (release.x - startPoint.x) * 100;
+            let yV = (release.y - startPoint.y) * 100;
+        
             $(line).remove();
 
             $.ajax({
@@ -91,9 +90,11 @@ function attachEventHandlers() {
                 }),
                 success: function(data) {
                     console.log('Shot processed:', data);
-                    for (let frame of data.frames) {
-                        $('#svg-container').html(frame);
-                        $('#svg-container').show();
+                    if (data && data.frames) {
+                        displayFrames(data.frames)
+                    }
+                    else {
+                        console.error('Error')
                     }
                 },
                 error: function(error) {
@@ -103,7 +104,25 @@ function attachEventHandlers() {
         });
 }
 
+function displayFrames(frames) {
+    let currentFrame = 0;
+    function displayNextFrame() {
+        if (currentFrame >= frames.length) {
+            console.log("all frames displayed")
+            return;
+        }
+        const frameSVG = frames[currentFrame].svg;
+        if(frameSVG) {
+            $('#svg-container').html(frameSVG);
+            currentFrame++;
+            setTimeout(displayNextFrame, 1);
+        } else {
+            console.error('error SVG data.');
+        }
+    }
+    displayNextFrame(); // Start displaying the frames
+}
 
-$(document).ready(function() {
-    simulateAndDisplayShot();
-});
+// $(document).ready(function() {
+//     simulateAndDisplayShot();
+// });
